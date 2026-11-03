@@ -1,4 +1,4 @@
-:root{--paper:#eef3f9;--surface:#ffffff;--ink:#1f2d3b;--muted:#46566a;--blue:#2f5884;--tint:#dbe6f2;--line:#b9c9da;--field:#7d93ab;--ok:#235c43;--ng:#8a3247;--ng-line:#a8687a;--ng-bg:#f8eef1}
+:root{--paper:#eef3f9;--surface:#ffffff;--ink:#1f2d3b;--muted:#46566a;--blue:#2f5884;--tint:#dbe6f2;--line:#b9c9da;--field:#7d93ab;--ok:#235c43;--ng:#8a3247;--ng-line:#a8687a;--ng-bg:#f8eef1;--ok-bg:#e6f2ec}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;font-size:15px;line-height:1.8}
 button,input{font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer}a{color:inherit;text-decoration:none}
@@ -55,14 +55,20 @@ footer a{text-decoration:underline;color:var(--blue)}
 .qa-row{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:start}
 .qa-mark{display:inline-block;text-align:center;font-size:13px;font-weight:700;color:#fff;background:var(--blue);border-radius:4px;padding:3px 0;margin-top:4px}
 .qa-row h2{font-size:20px;line-height:1.75;margin:0}
-.qa-answer{margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}.qa-answer .qa-mark{background:var(--ok)}
-.qa-answer strong{display:block;font-size:20px;line-height:1.7;margin-bottom:12px}
-.answer-note{margin:0;padding:12px 14px;background:var(--paper);border-radius:6px;line-height:1.9}
+.choices{display:grid;gap:10px;margin-top:22px}
+.choice{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px 14px;border:1px solid var(--field);border-radius:8px;background:var(--surface);color:var(--ink);line-height:1.6}
+.choice:hover:not(:disabled){background:var(--tint);border-color:var(--blue)}
+.choice:disabled{cursor:default}
+.choice-key{flex-shrink:0;display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--field);border-radius:50%;font-size:13px;font-weight:700;color:var(--blue)}
+.choice-text{flex:1}
+.choice-tag{flex-shrink:0;font-size:12px;font-weight:700;border-radius:4px;padding:2px 8px;color:#fff}
+.choice.correct{background:var(--ok-bg);border:2px solid var(--ok)}.choice.correct .choice-key{background:var(--ok);border-color:var(--ok);color:#fff}.choice.correct .choice-tag{background:var(--ok)}
+.choice.wrong{background:var(--ng-bg);border:2px solid var(--ng)}.choice.wrong .choice-key{background:var(--ng);border-color:var(--ng);color:#fff}.choice.wrong .choice-tag{background:var(--ng)}
+.judge{margin-top:22px;padding:12px 14px;border-radius:8px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.judge strong{font-size:18px}.judge.is-ok{background:var(--ok-bg);color:var(--ok)}.judge.is-ng{background:var(--ng-bg);color:var(--ng)}.judge span{color:var(--ink)}
+.answer-note{margin:14px 0 0;padding:12px 14px;background:var(--paper);border-radius:6px;line-height:1.9}
 .note-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:2px}
-.reveal-area{margin-top:24px;padding-top:24px;border-top:1px solid var(--line);text-align:center}.reveal-area .btn{min-width:240px}
-.grade{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}.grade p{font-size:14px;font-weight:700;margin-bottom:10px}
-.grade-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grade-ok{background:var(--ok);border-color:var(--ok)}.grade-ng{background:var(--ng);border-color:var(--ng)}
+.next-row{margin-top:20px;text-align:right}.next-row .btn{min-width:200px}
 .keyhint{text-align:center}
 
 .result{max-width:680px;margin:auto}
@@ -109,8 +115,8 @@ input::placeholder{color:#5d6b7b}
  .review-box{flex-direction:column;align-items:stretch;padding:18px 16px}.review-box .btn{width:100%}
  .panel{padding:18px 16px}.panel>.btn{width:100%}
  .quiz-top{font-size:13px}
- .qa-card{padding:18px 16px}.qa-row{grid-template-columns:1fr;gap:6px}.qa-mark{justify-self:start;padding:2px 10px;margin:0}.qa-row h2{font-size:18px}.qa-answer strong{font-size:18px}
- .reveal-area .btn{width:100%}
+ .qa-card{padding:18px 16px}.qa-row{grid-template-columns:1fr;gap:6px}.qa-mark{justify-self:start;padding:2px 10px;margin:0}.qa-row h2{font-size:18px}
+ .choice{min-height:56px;font-size:16px}.next-row .btn{width:100%}
  .keyhint{display:none}
  .filters{display:grid;grid-template-columns:1fr 1fr;gap:8px}.chip{min-height:44px}
  input[type=search]{font-size:16px;min-height:48px}
