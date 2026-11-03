@@ -1,0 +1,18 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const context=vm.createContext({});
+vm.runInContext(fs.readFileSync('docs/data.js','utf8')+'\n'+fs.readFileSync('docs/backup.js','utf8')+'\nthis.backup=StudyBackup; this.questions=questions; this.genres=genres;',context);
+const b=context.backup;
+const questionId=context.questions[0].id;
+const data={answers:{[questionId]:{count:4,correct:3,last:false,wrong:true}},history:[{date:'2026-11-01T10:00:00.000Z',mode:'電気理論',score:3,count:10},{date:'2026-11-01T11:00:00.000Z',mode:'復習',score:2,count:2}]};
+const clean=x=>JSON.parse(JSON.stringify(x));
+test('ダウンロードしたJSONを読み込むと、回答数・復習リスト・学習履歴が元のまま戻る',()=>assert.deepEqual(clean(b.parse(b.serialize(data))),data));
+test('壊れたJSON、電工ノート以外のファイル、未対応バージョンのファイルは読み込みを断る',()=>{for(const file of ['{','{}',JSON.stringify({format:'denko-study-backup',version:2,data})])assert.throws(()=>b.parse(file));});
+test('分野名・点数・日付・回答数が食い違う記録は読み込みを断る',()=>{for(const mutate of [d=>d.history[0].mode='<img onerror=alert(1)>',d=>d.history[0].score=11,d=>d.history[0].date='not a date',d=>d.answers[questionId].count=-1,d=>d.answers[questionId].correct=10,d=>d.answers['unknown']={count:1,correct:1,last:true,wrong:false},d=>d.history=Array(51).fill(d.history[0])]){const d=clean(data);mutate(d);assert.throws(()=>b.validate(d));}});
+test('記録が空のファイルは読み込め、知らない項目は捨てられる',()=>assert.deepEqual(clean(b.parse(b.serialize({answers:{},history:[],extra:'discard'}))),{answers:{},history:[]}));
+test('問題の番号はすべて重複しない',()=>{const ids=context.questions.map(q=>q.id);assert.equal(new Set(ids).size,ids.length);});
+test('すべての問題に、問題文・解答・解説が書かれていて、分野が一覧にある',()=>{const names=new Set(context.genres.map(g=>g.name));for(const q of context.questions){assert.ok(q.title.length>0,q.id);assert.ok(q.answer.length>0,q.id);assert.ok(q.note.length>0,q.id);assert.ok(names.has(q.group),q.id);}});
+test('すべての問題に誤りの選択肢が2つあり、正解とも互いとも重ならない',()=>{for(const q of context.questions){assert.equal(q.wrong.length,2,q.id);assert.equal(new Set([q.answer,...q.wrong]).size,3,q.id);for(const w of q.wrong)assert.ok(w.length>0,q.id);}});
+test('問題文はすべて重複しない',()=>{const titles=context.questions.map(q=>q.title);assert.equal(new Set(titles).size,titles.length);});
