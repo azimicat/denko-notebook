@@ -14,3 +14,5 @@ test('分野名・点数・日付・回答数が食い違う記録は読み込�
 test('記録が空のファイルは読み込め、知らない項目は捨てられる',()=>assert.deepEqual(clean(b.parse(b.serialize({answers:{},history:[],extra:'discard'}))),{answers:{},history:[]}));
 test('問題の番号はすべて重複しない',()=>{const ids=context.questions.map(q=>q.id);assert.equal(new Set(ids).size,ids.length);});
 test('すべての問題に、問題文・解答・解説が書かれていて、分野が一覧にある',()=>{const names=new Set(context.genres.map(g=>g.name));for(const q of context.questions){assert.ok(q.title.length>0,q.id);assert.ok(q.answer.length>0,q.id);assert.ok(q.note.length>0,q.id);assert.ok(names.has(q.group),q.id);}});
+test('すべての問題に誤りの選択肢が2つあり、正解とも互いとも重ならない',()=>{for(const q of context.questions){assert.equal(q.wrong.length,2,q.id);assert.equal(new Set([q.answer,...q.wrong]).size,3,q.id);for(const w of q.wrong)assert.ok(w.length>0,q.id);}});
+test('問題文はすべて重複しない',()=>{const titles=context.questions.map(q=>q.title);assert.equal(new Set(titles).size,titles.length);});
